@@ -13,10 +13,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Update system certificates and libraries
+    - name: Install CA Certificates
       run: |
         sudo apt-get update
-        sudo apt-get install --reinstall ca-certificates openssl
+        sudo apt-get install --reinstall ca-certificates
+        sudo update-ca-certificates
+    
+    - name: Update pymongo
+      run: python -m pip install --upgrade pymongo
 
     - name: Checkout code
       uses: actions/checkout@v4
@@ -33,5 +37,5 @@ jobs:
 
     - name: Run Unit Tests
       env: 
-        MONGODB_URI: "mongodb+srv://myappuser:Mongoatlas@cluster0.gas37.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+        MONGODB_URI: "mongodb+srv://myappuser:Mongoatlas@cluster0.gas37.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0&tlsAllowInvalidCertificates=true"
       run: python -m unittest discover -s tests
