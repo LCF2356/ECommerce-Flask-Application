@@ -38,5 +38,5 @@ jobs:
 
     - name: Run Unit Tests
       env: 
-        MONGODB_URI: "mongodb+srv://myappuser:Mongoatlas@cluster0.gas37.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0&ssl=false"
+        MONGODB_URI: "mongodb+srv://myappuser:Mongoatlas@cluster0.gas37.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0&connectTimeoutMS=60000&socketTimeoutMS=60000&ssl=false"
       run: python -m unittest discover -s tests
