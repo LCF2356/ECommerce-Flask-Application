@@ -13,6 +13,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Update system certificates and libraries
+      run: |
+        sudo apt-get update
+        sudo apt-get install --reinstall ca-certificates openssl
+
     - name: Checkout code
       uses: actions/checkout@v4
 
