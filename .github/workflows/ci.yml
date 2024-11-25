@@ -1,42 +1,95 @@
-name: Python CI/CD Pipeline
+# name: Python CI/CD Pipeline
+
+# on:
+#   push:
+#     branches:
+#       - main
+#   pull_request:
+#     branches:
+#       - main
+
+# jobs:
+#   test:
+#     runs-on: ubuntu-latest
+
+#     steps:
+    
+#     - name: Update pymongo
+#       run: python -m pip install --upgrade pymongo
+
+#     - name: Checkout code
+#       uses: actions/checkout@v4
+
+#     - name: Set up Python
+#       uses: actions/setup-python@v5
+#       with:
+#         python-version: '3.13'
+
+#     - name: Install dependenciess
+#       run: |
+#         pip install pymongo[srv]  # Add this line to ensure SRV support
+#         pip install certifi      # Add this for SSL certificates
+#         pip install -r requirements.txt
+
+#     - name: Install dependencies
+#       run: |
+#         python -m pip install --upgrade pip
+#         pip install -r requirements.txt
+
+#     - name: Run Unit Tests
+#       env: 
+#         MONGODB_URI: "mongodb+srv://myappuser:Mongoatlas@cluster0.gas37.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0&connectTimeoutMS=60000&socketTimeoutMS=60000&ssl=false"
+#       run: python -m unittest discover -s tests
+
+
+
+
+name: Flask App CI
 
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
     branches:
-      - main
+      - master
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-    
-    - name: Update pymongo
-      run: python -m pip install --upgrade pymongo
+    # Step 1: Checkout the Code
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-    - name: Checkout code
-      uses: actions/checkout@v4
-
+    # Step 2: Set up Python Environment
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v3
       with:
-        python-version: '3.13'
+        python-version: 3.11
 
-    - name: Install dependenciess
-      run: |
-        pip install pymongo[srv]  # Add this line to ensure SRV support
-        pip install certifi      # Add this for SSL certificates
-        pip install -r requirements.txt
-
+    # Step 3: Install Dependencies (with no cache)
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install --no-cache-dir -r requirements.txt
 
-    - name: Run Unit Tests
-      env: 
-        MONGODB_URI: "mongodb+srv://myappuser:Mongoatlas@cluster0.gas37.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0&connectTimeoutMS=60000&socketTimeoutMS=60000&ssl=false"
-      run: python -m unittest discover -s tests
+    # Step 4: Add Environment Variables
+    - name: Set up environment variables
+      env:
+        MONGODB_USERNAME: ${{ secrets.MONGODB_USERNAME }}
+        MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
+      run: |
+        echo "MONGODB_USERNAME=${MONGODB_USERNAME}" > .env
+        echo "MONGODB_PASSWORD=${MONGODB_PASSWORD}" >> .env
+
+    # Step 5: Verify Installed Packages (to check if pytest is installed)
+    - name: Verify installed packages
+      run: |
+        pip show pytest
+        pip list
+
+    # Step 6: Run Unit Tests
+    - name: Run tests
+      run: pytest tests/

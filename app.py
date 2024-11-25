@@ -8,6 +8,7 @@ app = Flask(__name__)
 load_dotenv() 
 
 
+
 # MongoDB connection
 mongo_username = os.getenv('MONGODB_USERNAME')
 mongo_password = os.getenv('MONGODB_PASSWORD')
